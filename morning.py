@@ -32,19 +32,31 @@ JST = timezone(timedelta(hours=9))
 def fetch_calendar_events() -> list[dict]:
     """
     Google Calendar API で今日の予定を取得します。
-    GOOGLE_CALENDAR_ID と credentials.json が必要です。
+    初回のみブラウザでGoogleログインが必要です（OAuth2）。
     """
     try:
-        from google.oauth2 import service_account
+        from google.oauth2.credentials import Credentials
+        from google_auth_oauthlib.flow import InstalledAppFlow
+        from google.auth.transport.requests import Request
         from googleapiclient.discovery import build
 
         creds_path = os.getenv("GOOGLE_CREDENTIALS_FILE", "credentials.json")
         calendar_id = os.getenv("GOOGLE_CALENDAR_ID", "primary")
+        token_path = Path(__file__).parent / "token.json"
         scopes = ["https://www.googleapis.com/auth/calendar.readonly"]
 
-        credentials = service_account.Credentials.from_service_account_file(
-            creds_path, scopes=scopes
-        )
+        credentials = None
+        if token_path.exists():
+            credentials = Credentials.from_authorized_user_file(str(token_path), scopes)
+
+        if not credentials or not credentials.valid:
+            if credentials and credentials.expired and credentials.refresh_token:
+                credentials.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(creds_path, scopes)
+                credentials = flow.run_local_server(port=0)
+            token_path.write_text(credentials.to_json())
+
         service = build("calendar", "v3", credentials=credentials)
 
         now = datetime.now(JST)
