@@ -54,7 +54,13 @@ def fetch_calendar_events() -> list[dict]:
                 credentials.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(creds_path, scopes)
-                credentials = flow.run_local_server(port=0)
+                print("\n【初回認証】以下のURLをブラウザで開いてください：")
+                flow.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+                auth_url, _ = flow.authorization_url(prompt="consent")
+                print(f"\n{auth_url}\n")
+                code = input("ブラウザに表示された認証コードを貼り付けてください: ").strip()
+                flow.fetch_token(code=code)
+                credentials = flow.credentials
             token_path.write_text(credentials.to_json())
 
         service = build("calendar", "v3", credentials=credentials)
