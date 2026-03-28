@@ -1,0 +1,32 @@
+[
+  {
+    "title": "LINE配信メッセージ作成",
+    "date": "everyday",
+    "priority": "high",
+    "done": false
+  },
+  {
+    "title": "Instagramストーリー投稿",
+    "date": "everyday",
+    "priority": "high",
+    "done": false
+  },
+  {
+    "title": "Threads投稿（1〜2件）",
+    "date": "everyday",
+    "priority": "medium",
+    "done": false
+  },
+  {
+    "title": "DMフォロー返信",
+    "date": "everyday",
+    "priority": "medium",
+    "done": false
+  },
+  {
+    "title": "コンテンツネタ帳に3件追記",
+    "date": "everyday",
+    "priority": "low",
+    "done": false
+  }
+]
