@@ -1,0 +1,11 @@
+# 認証情報（絶対にコミットしない）
+credentials.json
+token.json
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
