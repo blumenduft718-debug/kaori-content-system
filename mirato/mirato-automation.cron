@@ -1,0 +1,19 @@
+# Mirato株式会社 自動化スクリプト cronジョブ設定
+# /etc/cron.d/mirato-automation として配置してください
+#
+# 配置コマンド例:
+#   sudo cp mirato-automation.cron /etc/cron.d/mirato-automation
+#   sudo chmod 644 /etc/cron.d/mirato-automation
+
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+SCRIPT_DIR=/home/user/kaori-content-system/mirato
+
+# 朝礼レポート：平日(月-金) 毎朝9時
+0 9 * * 1-5 root cd $SCRIPT_DIR && python3 morning_report.py >> $SCRIPT_DIR/logs/morning_report.log 2>&1
+
+# 終礼レポート：平日(月-金) 毎日18時
+0 18 * * 1-5 root cd $SCRIPT_DIR && python3 evening_report.py >> $SCRIPT_DIR/logs/evening_report.log 2>&1
+
+# Notionコメント処理：毎30分
+*/30 * * * * root cd $SCRIPT_DIR && python3 comment_processor.py >> $SCRIPT_DIR/logs/comment_processor.log 2>&1
